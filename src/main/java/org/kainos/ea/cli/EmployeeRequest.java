@@ -14,15 +14,15 @@ public class EmployeeRequest {
         return first_name;
     }
 
-    public void setFirst_name(String first_name) {
+    public void setFirstName(String first_name) {
         this.first_name = first_name;
     }
 
-    public String getLast_name() {
+    public String getLastName() {
         return last_name;
     }
 
-    public void setLast_name(String last_name) {
+    public void setLastName(String last_name) {
         this.last_name = last_name;
     }
 
@@ -34,19 +34,19 @@ public class EmployeeRequest {
         this.salary = salary;
     }
 
-    public String getBank_account_number() {
+    public String getBankAccountNumber() {
         return bank_account_number;
     }
 
-    public void setBank_account_number(String bank_account_number) {
+    public void setBankAccountNumber(String bank_account_number) {
         this.bank_account_number = bank_account_number;
     }
 
-    public String getNational_insurance_number() {
+    public String getNationalInsuranceNumber() {
         return national_insurance_number;
     }
 
-    public void setNational_insurance_number(String national_insurance_number) {
+    public void setNationalInsuranceNumber(String national_insurance_number) {
         this.national_insurance_number = national_insurance_number;
     }
 

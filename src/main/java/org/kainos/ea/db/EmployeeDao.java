@@ -157,10 +157,10 @@ public class EmployeeDao {
         PreparedStatement st = c.prepareStatement(updateStatement);
 
         st.setString(1, employee.getFirstName());
-        st.setString(2, employee.getLast_name());
+        st.setString(2, employee.getLastName());
         st.setDouble(3, employee.getSalary());
-        st.setString(4,employee.getBank_account_number());
-        st.setString(5,employee.getNational_insurance_number());
+        st.setString(4,employee.getBankAccountNumber());
+        st.setString(5,employee.getNationalInsuranceNumber());
         st.setInt(6,id);
 
         st.executeUpdate();
@@ -170,10 +170,13 @@ public class EmployeeDao {
     public Employee getEmployeeById(int id) throws SQLException {
         Connection c = DatabaseConnector.getConnection();
 
-        Statement st = c.createStatement();
+        String insertStatement = "SELECT employee_id, first_name, last_name, salary, bank_account_number, national_insurance_number FROM `employee` WHERE employee_id=" + id;
 
-        ResultSet rs = st.executeQuery("SELECT employee_id, first_name, last_name, salary, bank_account_number, national_insurance_number" +
-                " FROM `employee` WHERE employee_id=" + id);
+        PreparedStatement ps = c.prepareStatement(insertStatement);
+
+        ps.setInt(1, id);
+
+        ResultSet rs = ps.executeQuery();
 
         while (rs.next()) {
             return new Employee(

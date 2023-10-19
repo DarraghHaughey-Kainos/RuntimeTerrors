@@ -3,6 +3,7 @@ package org.kainos.ea.db;
 import org.kainos.ea.cli.DeliveryEmployee;
 import org.kainos.ea.cli.DeliveryEmployeeRequest;
 import org.kainos.ea.cli.Employee;
+import org.kainos.ea.cli.EmployeeRequest;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -146,5 +147,49 @@ public class EmployeeDao {
         st.setInt(1, id);
 
         st.executeUpdate();
+    }
+
+    public void updateEmployee(int id, EmployeeRequest employee) throws SQLException {
+        Connection c = DatabaseConnector.getConnection();
+
+        String updateStatement = "UPDATE employee SET first_name = ?, last_name = ?, salary = ?, bank_account_number = ?, national_insurance_number = ? WHERE employee_id = ?";
+
+        PreparedStatement st = c.prepareStatement(updateStatement);
+
+        st.setString(1, employee.getFirstName());
+        st.setString(2, employee.getLastName());
+        st.setDouble(3, employee.getSalary());
+        st.setString(4,employee.getBankAccountNumber());
+        st.setString(5,employee.getNationalInsuranceNumber());
+        st.setInt(6,id);
+
+        st.executeUpdate();
+
+    }
+
+    public Employee getEmployeeById(int id) throws SQLException {
+        Connection c = DatabaseConnector.getConnection();
+
+        String insertStatement = "SELECT employee_id, first_name, last_name, salary, bank_account_number, national_insurance_number FROM `employee` WHERE employee_id=" + id;
+
+        PreparedStatement ps = c.prepareStatement(insertStatement);
+
+        ps.setInt(1, id);
+
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            return new Employee(
+                    rs.getInt("employee_id"),
+                    rs.getString("first_name"),
+                    rs.getString("last_name"),
+                    rs.getDouble("salary"),
+                    rs.getString("bank_account_number"),
+                    rs.getString("national_insurance_number")
+            );
+
+        }
+
+        return null;
     }
 }

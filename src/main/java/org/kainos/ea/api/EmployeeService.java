@@ -3,7 +3,11 @@ package org.kainos.ea.api;
 import org.kainos.ea.cli.DeliveryEmployeeRequest;
 import org.kainos.ea.cli.DeliveryEmployee;
 import org.kainos.ea.cli.Employee;
+import org.kainos.ea.cli.EmployeeRequest;
 import org.kainos.ea.client.GenericActionFailedException;
+import org.kainos.ea.client.InvalidEmployeeException;
+import org.kainos.ea.client.EmployeeDoesNotExistException;
+import org.kainos.ea.client.FailedToUpdateEmployeeException;
 import org.kainos.ea.client.GenericValidationException;
 import org.kainos.ea.core.DeliveryEmployeeValidator;
 import org.kainos.ea.client.GenericDoesNotExistException;
@@ -86,6 +90,28 @@ public class EmployeeService {
             System.err.println(e.getMessage());
 
             throw new GenericActionFailedException("failed to delete delivery employee");
+        }
+    }
+
+    public void updateEmployee (int id, EmployeeRequest employee) throws InvalidEmployeeException, EmployeeDoesNotExistException, FailedToUpdateEmployeeException {
+        try {
+//            String validation = employeeValidator.isValidEmployee(employee);
+//
+//            if (validation != null) {
+//                throw new InvalidEmployeeException(validation);
+//            }
+
+            Employee employeeToUpdate = employeeDao.getEmployeeById(id);
+
+            if (employeeToUpdate == null) {
+                throw new EmployeeDoesNotExistException();
+            }
+
+            employeeDao.updateEmployee(id, employee);
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+
+            throw new FailedToUpdateEmployeeException();
         }
     }
 

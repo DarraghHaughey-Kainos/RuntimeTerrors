@@ -3,10 +3,12 @@ package org.kainos.ea.api;
 import org.kainos.ea.cli.DeliveryEmployeeRequest;
 import org.kainos.ea.cli.DeliveryEmployee;
 import org.kainos.ea.cli.Employee;
+import org.kainos.ea.cli.SalesEmployeeRequest;
 import org.kainos.ea.client.GenericActionFailedException;
 import org.kainos.ea.client.GenericValidationException;
 import org.kainos.ea.core.DeliveryEmployeeValidator;
 import org.kainos.ea.client.GenericDoesNotExistException;
+import org.kainos.ea.core.SalesEmployeeValidator;
 import org.kainos.ea.db.EmployeeDao;
 
 import java.sql.SQLException;
@@ -16,6 +18,7 @@ public class EmployeeService {
 
     private final EmployeeDao employeeDao = new EmployeeDao();
     private final DeliveryEmployeeValidator deliveryEmployeeValidator = new DeliveryEmployeeValidator();
+    private final SalesEmployeeValidator salesEmployeeValidator = new SalesEmployeeValidator();
 
     public List<Employee> getAllEmployees() throws GenericActionFailedException {
 
@@ -90,4 +93,21 @@ public class EmployeeService {
     }
 
 
+    public int createSalesEmployee(SalesEmployeeRequest salesEmployee) throws GenericActionFailedException, GenericValidationException {
+        try {
+
+            salesEmployeeValidator.isValidSalesEmployee(salesEmployee);
+
+            int id = employeeDao.createSalesEmployee(salesEmployee);
+
+            if (id == -1) {
+                throw new GenericActionFailedException("create sales employee");
+            }
+
+            return id;
+        } catch (SQLException | GenericValidationException e) {
+            System.err.println(e.getMessage());
+            throw new GenericActionFailedException("create delivery employee");
+        }
+           }
 }

@@ -3,6 +3,7 @@ package org.kainos.ea.resources;
 import io.swagger.annotations.Api;
 import org.kainos.ea.api.EmployeeService;
 import org.kainos.ea.cli.DeliveryEmployeeRequest;
+import org.kainos.ea.cli.SalesEmployeeRequest;
 import org.kainos.ea.client.GenericActionFailedException;
 import org.kainos.ea.client.GenericValidationException;
 import org.kainos.ea.client.GenericDoesNotExistException;
@@ -34,7 +35,7 @@ public class EmployeeController {
     @POST
     @Path("/employees/delivery")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createOrder(DeliveryEmployeeRequest deliveryEmployee) {
+    public Response createDeliveryEmployee(DeliveryEmployeeRequest deliveryEmployee) {
         try {
             return Response
                     .ok(employeeService.createDeliveryEmployee(deliveryEmployee))
@@ -103,6 +104,26 @@ public class EmployeeController {
         } catch (GenericDoesNotExistException e) {
 
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        }
+    }
+
+    @POST
+    @Path("/employees/sales")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createSalesEmployee(SalesEmployeeRequest salesEmployee) {
+        try {
+            return Response
+                    .ok(employeeService.createSalesEmployee(salesEmployee))
+                    .build();
+        } catch (GenericActionFailedException e) {
+            System.err.println(e.getMessage());
+            return Response.serverError().build();
+        } catch (GenericValidationException e) {
+            System.err.println(e.getMessage());
+            return Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
         }
     }
 }

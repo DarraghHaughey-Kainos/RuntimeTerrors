@@ -3,6 +3,7 @@ package org.kainos.ea.db;
 import org.kainos.ea.cli.DeliveryEmployee;
 import org.kainos.ea.cli.DeliveryEmployeeRequest;
 import org.kainos.ea.cli.Employee;
+import org.kainos.ea.cli.SalesEmployeeRequest;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -147,4 +148,44 @@ public class EmployeeDao {
 
         st.executeUpdate();
     }
+
+
+    public int createSalesEmployee(SalesEmployeeRequest salesEmployee) throws SQLException {
+        Connection c = DatabaseConnector.getConnection();
+
+        // Insert employee into employee table
+        String insertEmployeeStatement = "INSERT INTO employee (first_name, last_name, salary, bank_account_number, national_insurance_number) VALUES (?,?,?,?,?);";
+        PreparedStatement ste = c.prepareStatement(insertEmployeeStatement, Statement.RETURN_GENERATED_KEYS);
+
+        ste.setString(1, salesEmployee.getFirstName());
+        ste.setString(2, salesEmployee.getLastName());
+        ste.setDouble(3, salesEmployee.getSalary());
+        ste.setString(4, salesEmployee.getBankAccountNumber());
+        ste.setString(5, salesEmployee.getNationalInsuranceNumber());
+
+        ste.executeUpdate();
+        ResultSet rse = ste.getGeneratedKeys();
+
+        int employeeId = rse.getInt(1);
+
+        if(rse.next()) {
+            // insert new employee id into delivery employee table
+            String insertSalesEmployeeStatement = "INSERT INTO sales_employee (employee_id, commission_rate) VALUES (?, ?);";
+            PreparedStatement stde = c.prepareStatement(insertSalesEmployeeStatement, Statement.RETURN_GENERATED_KEYS);
+
+            stde.setInt(1, employeeId);
+            stde.setDouble(2, salesEmployee.getCommissionRate());
+
+            stde.executeUpdate();
+            ResultSet rsde = stde.getGeneratedKeys();
+
+            if (rsde.next()) {
+                // return employee id
+                return employeeId;
+            }
+        }
+        return -1;
+    }
 }
+
+
